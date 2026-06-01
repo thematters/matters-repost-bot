@@ -1,6 +1,6 @@
-"""Source: thewitnesshk.com (法庭線).
+"""Source: thewitnesshk.com (The Witness).
 
-WordPress site with REST API enabled. Filters to the 焦點 (category id 28)
+WordPress site with REST API enabled. Filters to the Focus (category id 28)
 section per @mattershkrec's editorial preference.
 
 The site's WAF returns hard 403s to Chrome-fingerprint sessions from
@@ -12,7 +12,7 @@ Body cleanup notes:
   the real URL is in `srcset` (or sometimes `data-src`). We extract the
   largest URL from srcset.
 - YouTube/iframe embeds inside `<figure class="wp-block-embed">` won't
-  render on Matters — strip the whole figure.
+  render on Matters; strip the whole figure.
 """
 from __future__ import annotations
 
@@ -30,15 +30,15 @@ log = logging.getLogger(__name__)
 SITE = "https://thewitnesshk.com"
 API = f"{SITE}/wp-json/wp/v2"
 
-# 焦點 — the section we mirror.
+# Focus: the section we mirror.
 FOCUS_CATEGORY_ID = 28
 
 CREDIT_LINKS = [
-    ("法庭線官網",      "https://thewitnesshk.com/"),
-    ("法庭線Facebook", "https://www.facebook.com/thewitnesshk"),
-    ("法庭線YouTube",  "https://www.youtube.com/@thewitnesshk"),
-    ("法庭線Instagram", "https://instagram.com/thewitnesshk"),
-    ("法庭線Patreon",  "https://www.patreon.com/thewitnesshk"),
+    ("The Witness website", "https://thewitnesshk.com/"),
+    ("The Witness Facebook", "https://www.facebook.com/thewitnesshk"),
+    ("The Witness YouTube", "https://www.youtube.com/@thewitnesshk"),
+    ("The Witness Instagram", "https://instagram.com/thewitnesshk"),
+    ("The Witness Patreon", "https://www.patreon.com/thewitnesshk"),
 ]
 
 ALLOWED_TAGS = {
@@ -93,9 +93,9 @@ class TheWitnessHkSource(Source):
         title = d.get("title", {}).get("rendered", "").strip()
         if not title:
             raise ValueError(f"No title for post {ref.article_id}")
-        # @mattershkrec receives drafts from multiple sources — prefix the
+        # @mattershkrec receives drafts from multiple sources; prefix the
         # source label so editors can tell them apart in the drafts list.
-        title = f"【法庭線】{title}"
+        title = f"[The Witness] {title}"
         date = (d.get("date") or "")[:10]
         content_html = d.get("content", {}).get("rendered", "")
 
@@ -147,7 +147,10 @@ class TheWitnessHkSource(Source):
     # ----- header & credit -----
 
     def build_header_html(self, article: Article) -> str:
-        return f'<p>（<a href="{escape(article.url)}">原文刊載於法庭線</a>）</p>'
+        return (
+            f'<p>(<a href="{escape(article.url)}">Originally published by '
+            f'The Witness</a>)</p>'
+        )
 
     def build_credit_html(self, article: Article) -> str:
         return "".join(
@@ -189,7 +192,7 @@ def _clean_body(html: str) -> str:
     for bad in root.find_all(["script", "style", "noscript", "iframe"]):
         bad.decompose()
 
-    # Strip HTML comments (e.g. <!--more-->, VideographyWP plugin notices) —
+    # Strip HTML comments (e.g. <!--more-->, VideographyWP plugin notices):
     # otherwise they survive into the body as raw text after BS4 serialises.
     from bs4 import Comment
     for c in list(root.find_all(string=lambda s: isinstance(s, Comment))):

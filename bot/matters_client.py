@@ -28,7 +28,7 @@ class MattersClient:
         self.session.headers.update({
             "User-Agent": USER_AGENT,
             "Content-Type": "application/json",
-            "x-client-name": "p-articles-repost-bot",
+            "x-client-name": "matters-repost-bot",
         })
         self.token: Optional[str] = None
 
@@ -142,7 +142,7 @@ class MattersClient:
           singleFileUpload(input: $input) { id path type }
         }
         """
-        # Note: SingleFileUploadInput has no `mime` field — Matters derives it
+        # Note: SingleFileUploadInput has no `mime` field; Matters derives it
         # from the multipart part's Content-Type. We still pass `mime` into the
         # multipart part below.
         operations = json.dumps({
@@ -166,7 +166,7 @@ class MattersClient:
         }
         headers = {
             "User-Agent": USER_AGENT,
-            "x-client-name": "p-articles-repost-bot",
+            "x-client-name": "matters-repost-bot",
             # Apollo Server's CSRF protection rejects multipart requests unless
             # one of these "preflight" headers is present.
             "apollo-require-preflight": "true",

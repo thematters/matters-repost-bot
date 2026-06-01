@@ -1,4 +1,4 @@
-"""Source registry — add new sources to _REGISTRY as they're implemented."""
+"""Source registry: add new sources to _REGISTRY as they're implemented."""
 from .base import Article, ArticleRef, Source, fetch_image_bytes, make_scraper_session
 from .p_articles import PArticlesSource
 from .thecollectivehk import TheCollectiveHkSource

@@ -1,4 +1,4 @@
-"""Source: p-articles.com (虛詞・無形)."""
+"""Source: p-articles.com (Formless / P-articles)."""
 from __future__ import annotations
 
 import logging
@@ -19,14 +19,14 @@ SOURCE_BASE = "https://p-articles.com"
 ARTICLE_URL_RE = re.compile(r"^/([a-z_]+)/(\d+)\.html$")
 
 CREDIT_LINKS = [
-    ("虛詞・無形網站",     "https://p-articles.com/"),
-    ("虛詞・無形Facebook", "https://www.facebook.com/formless.particles"),
-    ("虛詞・無形YouTube",  "https://www.youtube.com/@formless.particles"),
-    ("虛詞・無形Patreon",  "https://www.patreon.com/thehouseofhk_literature"),
+    ("Formless / P-articles website", "https://p-articles.com/"),
+    ("Formless / P-articles Facebook", "https://www.facebook.com/formless.particles"),
+    ("Formless / P-articles YouTube", "https://www.youtube.com/@formless.particles"),
+    ("Formless / P-articles Patreon", "https://www.patreon.com/thehouseofhk_literature"),
 ]
 
 # Tags we keep in the article body. Anything else gets unwrapped (children kept,
-# tag removed). Matters' editor is conservative — keep this list narrow.
+# tag removed). Matters' editor is conservative; keep this list narrow.
 ALLOWED_TAGS = {
     "p", "br", "hr",
     "h2", "h3", "h4",
@@ -146,10 +146,11 @@ class PArticlesSource(Source):
 
     def build_header_html(self, article: Article) -> str:
         parts = [
-            f'<p>（<a href="{escape(article.url)}">原文刊載於虛詞・無形</a>）</p>'
+            f'<p>(<a href="{escape(article.url)}">Originally published by '
+            f'Formless / P-articles</a>)</p>'
         ]
         if article.author:
-            parts.append(f"<p>文｜{escape(article.author)}</p>")
+            parts.append(f"<p>By {escape(article.author)}</p>")
         return "".join(parts)
 
     def build_credit_html(self, article: Article) -> str:
@@ -166,11 +167,11 @@ def _text(node) -> str:
 
 
 def _parse_meta(h4: Optional[Tag]) -> tuple[str, str, str]:
-    """Parse '<a>影評</a> | by  王植 | 2026-05-27' → ('影評', '王植', '2026-05-27')."""
+    """Parse category, author, and date from the p-articles metadata row."""
     if not h4:
         return "", "", ""
     raw = h4.get_text(" ", strip=True)
-    parts = [p.strip() for p in re.split(r"[|｜]", raw) if p.strip()]
+    parts = [p.strip() for p in re.split(r"[|\uFF5C]", raw) if p.strip()]
     category_label = parts[0] if parts else ""
     author = ""
     date = ""

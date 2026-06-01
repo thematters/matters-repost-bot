@@ -24,7 +24,7 @@ log = logging.getLogger(__name__)
 
 @dataclass
 class ArticleRef:
-    """Lightweight pointer to an article — what listings produce.
+    """Lightweight pointer to an article: what listings produce.
 
     `article_id` is opaque to the orchestrator; sources define their own format
     (e.g. "critics/5993" for p-articles, a URL slug for WordPress sites).
@@ -72,7 +72,7 @@ def make_curl_cffi_session(impersonate: str = "safari17_0"):
     chrome-fingerprint sessions but lets safari/firefox through. curl_cffi
     sets its own UA/headers via the impersonation; we don't override them.
 
-    Returns a curl_cffi.requests.Session — quacks like requests.Session
+    Returns a curl_cffi.requests.Session: quacks like requests.Session
     (supports .get/.post/.headers/.content/.raise_for_status()).
     """
     from curl_cffi import requests as cffi  # local import: optional dep
@@ -85,7 +85,7 @@ def fetch_image_bytes(
 ) -> tuple[bytes, str]:
     """Download an image and return (bytes, content_type).
 
-    Pass the source's session so we reuse its Cloudflare-bypass token — fetching
+    Pass the source's session so we reuse its Cloudflare-bypass token; fetching
     images with a fresh session can re-trigger the JS challenge on every call.
     """
     s = session or make_scraper_session()
@@ -96,7 +96,7 @@ def fetch_image_bytes(
 
 
 class Source(ABC):
-    """A repost source — knows how to list, parse, track, and frame articles."""
+    """A repost source: knows how to list, parse, track, and frame articles."""
 
     name: str  # class attribute; e.g. "p_articles"
 

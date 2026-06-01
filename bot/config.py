@@ -1,4 +1,4 @@
-"""Generic config — env vars and shared constants.
+"""Generic config: env vars and shared constants.
 
 Per-source things (credit links, social URLs, header format) live inside each
 bot/sources/<name>.py module, not here.
