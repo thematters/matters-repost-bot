@@ -1,9 +1,9 @@
-name: Repost thecollectivehk → @mattershkrec
+name: Repost thecollectivehk to @mattershkrec
 
 on:
   schedule:
     # Tue & Fri 06:00 Hong Kong time (UTC+8). HKT 06:00 = UTC 22:00 previous day.
-    # → Mon 22:00 UTC = Tue 06:00 HKT; Thu 22:00 UTC = Fri 06:00 HKT.
+    # Mon 22:00 UTC = Tue 06:00 HKT; Thu 22:00 UTC = Fri 06:00 HKT.
     - cron: "0 22 * * 1,4"
   workflow_dispatch:
     inputs:
@@ -30,7 +30,7 @@ env:
 jobs:
   repost:
     runs-on: ubuntu-latest
-    # 6 hours — accommodates auto-publish runs that sleep 30 min between articles.
+    # 6 hours: accommodates auto-publish runs that sleep 30 min between articles.
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4

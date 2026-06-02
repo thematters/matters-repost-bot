@@ -87,7 +87,7 @@ def repost_article(
     publish: bool,
 ) -> Optional[dict]:
     if dry_run:
-        log.info("[DRY-RUN] would repost: %s — %s", article.source, article.title)
+        log.info("[DRY-RUN] would repost: %s - %s", article.source, article.title)
         return None
 
     log.info("Creating empty draft: %s", article.title)
@@ -165,9 +165,10 @@ def repost_article(
         try:
             result = client.publish_draft(draft_id)
         except MattersError as e:
-            # Don't fail the whole article on publish error — the draft is
+            # Don't fail the whole article on publish error: the draft is
             # already populated; leave it for the user to publish manually.
-            # Matters' rate limit ("操作過於頻繁") most often shows up here.
+            # Matters' rate limit ("actions are too frequent") most often
+            # shows up here.
             log.warning("Publish failed (leaving as draft): %s", e)
 
     return result
@@ -193,7 +194,7 @@ def run(
 
     if not state or bootstrap_only:
         new_state = source.bootstrap_state(refs)
-        log.info("Bootstrapping state — recording current refs as seen, posting nothing.")
+        log.info("Bootstrapping state: recording current refs as seen, posting nothing.")
         log.info("  state: %s", json.dumps(new_state, ensure_ascii=False))
         save_state(state_path, new_state)
         return 0
@@ -234,10 +235,13 @@ def run(
                 "url": ref.url,
                 "draft": result,
             })
-            # Advance state only on success so failures get retried next run.
-            source.advance_state(state, article)
-            save_state(state_path, state)
-            # Pace successive publishes — Matters caps at 2 per 12 min.
+            if dry_run:
+                log.info("[DRY-RUN] state not advanced for %s", ref.article_id)
+            else:
+                # Advance state only on success so failures get retried next run.
+                source.advance_state(state, article)
+                save_state(state_path, state)
+            # Pace successive publishes: Matters caps at 2 per 12 min.
             if publish and not dry_run and not is_last:
                 wait_min = config.PUBLISH_INTERVAL_MINUTES
                 log.info("Sleeping %d min before next publish (Matters rate limit)", wait_min)

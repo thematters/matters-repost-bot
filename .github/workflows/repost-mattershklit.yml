@@ -1,9 +1,9 @@
-name: Repost p-articles → @mattershklit
+name: Repost p-articles to @mattershklit
 
 on:
   schedule:
     # Mon & Thu 06:00 Hong Kong time (UTC+8). HKT 06:00 = UTC 22:00 previous day.
-    # → Sun 22:00 UTC = Mon 06:00 HKT; Wed 22:00 UTC = Thu 06:00 HKT.
+    # Sun 22:00 UTC = Mon 06:00 HKT; Wed 22:00 UTC = Thu 06:00 HKT.
     # Off-peak UTC reduces GHA scheduler delay (top-of-hour UTC is heavily oversubscribed).
     - cron: "0 22 * * 0,3"
   workflow_dispatch:
@@ -31,8 +31,8 @@ env:
 jobs:
   repost:
     runs-on: ubuntu-latest
-    # 6 hours — accommodates auto-publish runs that sleep 30 min between
-    # articles (10 articles ≈ 5 hours). Public-repo GHA minutes are unlimited
+    # 6 hours: accommodates auto-publish runs that sleep 30 min between
+    # articles (10 articles is about 5 hours). Public-repo GHA minutes are unlimited
     # so the longer ceiling is free.
     timeout-minutes: 360
     steps:

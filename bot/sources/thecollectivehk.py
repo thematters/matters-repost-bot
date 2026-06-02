@@ -1,12 +1,12 @@
-"""Source: thecollectivehk.com (集誌社).
+"""Source: thecollectivehk.com (The Collective HK).
 
-WordPress site. Filters to the 深度 section (category id 5, slug=in-depth)
-per @mattershkrec's editorial preference — same destination Matters account
-as 法庭線, just a separate scheduling/state stream.
+WordPress site. Filters to the In Depth section (category id 5, slug=in-depth)
+per @mattershkrec's editorial preference; same destination Matters account
+as The Witness, just a separate scheduling/state stream.
 
-WAF behaviour mirrors 法庭線: Chrome TLS from datacenters returns 403, so
+WAF behaviour mirrors The Witness: Chrome TLS from datacenters returns 403, so
 we use curl_cffi safari17_0 impersonation. Body cleanup mirrors the witness
-source — lazy images, iframe embeds, WP block clutter.
+source: lazy images, iframe embeds, WP block clutter.
 """
 from __future__ import annotations
 
@@ -24,15 +24,15 @@ log = logging.getLogger(__name__)
 SITE = "https://thecollectivehk.com"
 API = f"{SITE}/wp-json/wp/v2"
 
-# 深度 — the section we mirror.
+# In Depth: the section we mirror.
 IN_DEPTH_CATEGORY_ID = 5
 
 CREDIT_LINKS = [
-    ("集誌社官網",      "https://thecollectivehk.com/"),
-    ("集誌社Facebook", "https://www.facebook.com/thecollectivehongkong"),
-    ("集誌社Podcast",  "https://open.spotify.com/show/1VRgcHrohHpfTIsMy8qvE6"),
-    ("集誌社Instagram", "https://www.instagram.com/the_collectivehk/"),
-    ("集誌社Patreon",  "https://www.patreon.com/thecollectivehk"),
+    ("The Collective HK website", "https://thecollectivehk.com/"),
+    ("The Collective HK Facebook", "https://www.facebook.com/thecollectivehongkong"),
+    ("The Collective HK Podcast", "https://open.spotify.com/show/1VRgcHrohHpfTIsMy8qvE6"),
+    ("The Collective HK Instagram", "https://www.instagram.com/the_collectivehk/"),
+    ("The Collective HK Patreon", "https://www.patreon.com/thecollectivehk"),
 ]
 
 ALLOWED_TAGS = {
@@ -85,9 +85,9 @@ class TheCollectiveHkSource(Source):
         title = d.get("title", {}).get("rendered", "").strip()
         if not title:
             raise ValueError(f"No title for post {ref.article_id}")
-        # @mattershkrec receives drafts from multiple sources — prefix the
+        # @mattershkrec receives drafts from multiple sources; prefix the
         # source label so editors can tell them apart in the drafts list.
-        title = f"【集誌社】{title}"
+        title = f"[The Collective HK] {title}"
         date = (d.get("date") or "")[:10]
         content_html = d.get("content", {}).get("rendered", "")
 
@@ -139,7 +139,10 @@ class TheCollectiveHkSource(Source):
     # ----- header & credit -----
 
     def build_header_html(self, article: Article) -> str:
-        return f'<p>（<a href="{escape(article.url)}">原文刊載於集誌社</a>）</p>'
+        return (
+            f'<p>(<a href="{escape(article.url)}">Originally published by '
+            f'The Collective HK</a>)</p>'
+        )
 
     def build_credit_html(self, article: Article) -> str:
         return "".join(
